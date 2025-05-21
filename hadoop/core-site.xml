@@ -13,14 +13,4 @@
   <name>hadoop.tmp.dir</name>
   <value>/hadoopdata/hadoop/tmp</value>
 </property>
-
-<!-- <property>
-  <name>hadoop.proxyuser.hadoop.hosts</name>
-  <value>*</value>
-</property>
-<property>
-  <name>hadoop.proxyuser.hadoop.groups</name>
-  <value>*</value>
-</property> -->
-
 </configuration>

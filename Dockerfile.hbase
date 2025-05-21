@@ -16,7 +16,7 @@ ENV HBASE_HOME=/usr/local/hbase
 ENV PATH=$PATH:$HBASE_HOME/bin
 ENV HBASE_MANAGES_ZK=false
 ENV HBASE_LOG_DIR=/usr/local/hbase/logs
-ENV HBASE_OPTS="$HBASE_OPTS -Dhbase.regionserver.hostname=$(hostname -s)"
+# ENV HBASE_OPTS="$HBASE_OPTS -Dhbase.regionserver.hostname=$(hostname -s)"
 
 # Configure HBase
 COPY --chown=hadoop:hadoop hbase/* $HBASE_HOME/conf/

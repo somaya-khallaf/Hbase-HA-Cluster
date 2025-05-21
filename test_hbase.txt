@@ -1,22 +1,38 @@
-1 => Identify Active HBase Master
-Check HBase web UIs:
+Step 1: Identify Active and Standby HBase Masters
 
+Check HBase web UIs:
 http://localhost:16010 → hmaster1
 http://localhost:16020 → hmaster2
 
 active Master: hmaster1 or
 standby Master: hmaster2
 
+
+Step 2: Connect to Active Master
+
 docker exec -it hmaster1 bash
 hbase shell
 status 'detailed'
 
-in active hbase kill 1
 
-list
+Step 3: Simulate Failover
+
+Open a new terminal and kill the active master:
+docker kill hmaster1
+
+
+Step 4: Create Table and Insert Data
+
+docker exec -it hmaster2 bash
+hbase shell
 
 create 'test', 'cf'
 put 'test', 'row1', 'cf:data', 'val1'
 put 'test', 'row2', 'cf:data', 'val2'
 put 'test', 'row3', 'cf:data', 'val3'
+
+
+Step 6: Validate Data
+
+list
 scan 'test'
