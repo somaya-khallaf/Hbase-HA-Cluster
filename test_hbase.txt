@@ -1,0 +1,22 @@
+1 => Identify Active HBase Master
+Check HBase web UIs:
+
+http://localhost:16010 → hmaster1
+http://localhost:16020 → hmaster2
+
+active Master: hmaster1 or
+standby Master: hmaster2
+
+docker exec -it hmaster1 bash
+hbase shell
+status 'detailed'
+
+in active hbase kill 1
+
+list
+
+create 'test', 'cf'
+put 'test', 'row1', 'cf:data', 'val1'
+put 'test', 'row2', 'cf:data', 'val2'
+put 'test', 'row3', 'cf:data', 'val3'
+scan 'test'

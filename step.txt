@@ -1,0 +1,29 @@
+docker-compose down
+
+docker-compose up
+
+jps 
+
+hdfs haadmin -getAllServiceState
+
+yarn rmadmin -getAllServiceState
+
+hdfs --daemon stop namenode
+hdfs --daemon start namenode
+
+yarn --daemon stop resourcemanager
+
+hdfs dfs -mkdir /data
+
+echo hi >> test.txt
+
+hdfs dfs -put test.txt /data
+
+hdfs dfs -cat /data/*
+
+hadoop distcp /data/* /
+
+hdfs dfsadmin -report
+
+docker run -d --name worker2 --hostname worker2 --network docker_hadoop_net -e worker -v ${PWD}\hadoop:/home/hadoop/config hadoop-cluster
+

@@ -1,0 +1,32 @@
+# Stage 1: Base Hadoop image (reuse your existing setup)
+FROM hadoop-cluster:latest
+
+ARG HBASE_VERSION=2.5.11
+
+# Install HBase
+ADD https://dlcdn.apache.org/hbase/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz /tmp/
+RUN sudo tar -xzf /tmp/hbase-${HBASE_VERSION}-bin.tar.gz -C /usr/local/ && \
+    sudo mv /usr/local/hbase-${HBASE_VERSION} /usr/local/hbase && \
+    sudo rm -f /tmp/hbase-${HBASE_VERSION}-bin.tar.gz && \
+    sudo chown -R hadoop:hadoop /usr/local/hbase
+
+
+# Set HBase environment variables
+ENV HBASE_HOME=/usr/local/hbase
+ENV PATH=$PATH:$HBASE_HOME/bin
+ENV HBASE_MANAGES_ZK=false
+ENV HBASE_LOG_DIR=/usr/local/hbase/logs
+ENV HBASE_OPTS="$HBASE_OPTS -Dhbase.regionserver.hostname=$(hostname -s)"
+
+# Configure HBase
+COPY --chown=hadoop:hadoop hbase/* $HBASE_HOME/conf/
+
+# Entrypoint for HBase roles
+COPY --chown=hadoop:hadoop scripts/hbase-entrypoint.sh /usr/local/scripts/
+RUN chmod +x /usr/local/scripts/hbase-entrypoint.sh
+
+# Ensure proper permissions
+RUN sudo mkdir -p /hbase/data /hbase/zookeeper && \
+    sudo chown -R hadoop:hadoop /hbase
+
+ENTRYPOINT ["/usr/local/scripts/hbase-entrypoint.sh"]

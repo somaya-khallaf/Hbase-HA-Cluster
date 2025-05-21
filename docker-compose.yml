@@ -1,0 +1,240 @@
+version: '3.8'
+
+services:
+  master1:
+    image: hadoop-cluster:latest
+    hostname: master1
+    container_name: master1
+    environment:
+      - ROLE=master
+      - ZK_ID=1
+    ports:
+      - "9871:9870" 
+      - "8081:8088"
+      - "2181:2181"
+    volumes:
+      - ./code:/code:ro
+      - namenode1:/hadoopdata/namenode
+      - journalnode1:/hadoopdata/journalnode
+    networks:
+      - hadoop_net
+    healthcheck:
+      test: ["CMD-SHELL","nc -zw 2 master1 8020"]
+      interval: 30s
+      timeout: 240s
+      retries: 10
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  master2:
+    image: hadoop-cluster:latest
+    hostname: master2
+    container_name: master2
+    environment:
+      - ROLE=master
+      - ZK_ID=2
+    ports:
+      - "9872:9870" 
+      - "8082:8088" 
+      - "2182:2181"
+    volumes:
+      - ./code:/code:ro
+      - namenode2:/hadoopdata/namenode
+      - journalnode2:/hadoopdata/journalnode
+    networks:
+      - hadoop_net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  master3:
+    image: hadoop-cluster:latest
+    hostname: master3
+    container_name: master3
+    environment:
+      - ROLE=master
+      - ZK_ID=3
+    ports:
+      - "9873:9870"
+      - "8083:8088"
+      - "2183:2181"
+    volumes:
+      - ./code:/code:ro
+      - namenode3:/hadoopdata/namenode
+      - journalnode3:/hadoopdata/journalnode
+    networks:
+      - hadoop_net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  # HBase Master 1 (Active)
+  hmaster1:
+    image: hbase-cluster:latest
+    hostname: hmaster1
+    container_name: hmaster1
+    environment:
+      - HBASE_ROLE=hmaster
+    ports:
+      - "16010:16010"
+    volumes:
+      - hbase-data1:/hbase/data
+    networks:
+      - hadoop_net
+    depends_on:
+      master1:
+        condition: service_healthy
+      master2:
+        condition: service_healthy
+      master3:
+        condition: service_healthy  
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "16010"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  # HBase Master 2 (Standby)
+  hmaster2:
+    image: hbase-cluster:latest
+    hostname: hmaster2
+    container_name: hmaster2
+    environment:
+      - HBASE_ROLE=hmaster
+    ports:
+      - "16020:16010"
+    volumes:
+      - hbase-data2:/hbase/data
+    networks:
+      - hadoop_net
+    depends_on:
+      master1:
+        condition: service_healthy
+      master2:
+        condition: service_healthy
+      master3:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "16010"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  # HBase RegionServers
+  regionserver1:
+    image: hbase-cluster:latest
+    hostname: regionserver1
+    container_name: regionserver1
+    volumes:
+      - datanode1:/hadoopdata/datanode
+    environment:
+      - HBASE_ROLE=regionserver
+    networks:
+      - hadoop_net
+    depends_on:
+      master1:
+        condition: service_healthy
+      master2:
+        condition: service_healthy
+      master3:
+        condition: service_healthy
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  regionserver2:
+    image: hbase-cluster:latest
+    hostname: regionserver2
+    container_name: regionserver2
+    volumes:
+      - datanode2:/hadoopdata/datanode
+    environment:
+      - HBASE_ROLE=regionserver
+    networks:
+      - hadoop_net
+    depends_on:
+      master1:
+        condition: service_healthy
+      master2:
+        condition: service_healthy
+      master3:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  regionserver3:
+    image: hbase-cluster:latest
+    hostname: regionserver3
+    container_name: regionserver3
+    volumes:
+      - datanode3:/hadoopdata/datanode
+    environment:
+      - HBASE_ROLE=regionserver
+    networks:
+      - hadoop_net
+    depends_on:
+      master1:
+        condition: service_healthy
+      master2:
+        condition: service_healthy
+      master3:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+networks:
+  hadoop_net:
+    driver: bridge
+
+volumes:
+  namenode1:
+  namenode2:
+  namenode3:
+  journalnode1:
+  journalnode2:
+  journalnode3:
+  datanode1:
+  datanode2:
+  datanode3:
+  hbase-data1:
+  hbase-data2:
+  
