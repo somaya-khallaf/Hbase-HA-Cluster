@@ -29,16 +29,17 @@ scan 'web_pages', {FILTER => "SingleColumnValueFilter('metadata', 'json', =, 'su
 # List pages with HTTP 500 status code
 scan 'web_pages', {FILTER => "SingleColumnValueFilter('metadata', 'json', =, 'substring:500')"}
 
-# 3.3 Pagination example: scan domain pages 5 at a time
-# First page
-scan 'web_pages', {FILTER => "PrefixFilter('0|example.com|')", LIMIT => 5}
-# Note last row key of previous page and use it as STARTROW in next scan
-# scan 'web_pages', {STARTROW => '<last_row_key>', FILTER => "PrefixFilter('0|example.com|')", LIMIT => 5}
+# === 3.3 Pagination example: scan pages from domain 'demo.net' 5 at a time ===
+# Salt '9' used in sample row keys for demo.net domain
+# First page - limit 5 rows starting with salt 9 and domain demo.net
+scan 'web_pages', {FILTER => "PrefixFilter('9|demo.net|')", LIMIT => 5}
 
-# 3.4 Time-based operations
-# Get last 3 versions of a page's content
-get 'web_pages', '0|example.com|1682000000|abc12345', {VERSIONS => 3, COLUMNS => ['content:html']}
+# For next page, replace <last_row_key> with last row key of previous scan result, e.g.:
+# scan 'web_pages', {STARTROW => '9|demo.net|1734369586|d808b4b7', FILTER => "PrefixFilter('9|demo.net|')", LIMIT => 5}
 
-# TTL ensures expired cells auto-deleted (no command needed)
-# Manual purge example (delete old rows)
-deleteall 'web_pages', '0|example.com|<old_row_key>'
+# === 3.4 Time-based operations ===
+
+# Get last 3 versions of content for a page, example row key from your data:
+get 'web_pages', '9|sample.io|1743009586|a2b38f7f', {VERSIONS => 3, COLUMNS => ['content:html']}
+
+deleteall 'web_pages', '9|demo.net|1734369586|d808b4b7'
