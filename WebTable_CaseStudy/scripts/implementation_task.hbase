@@ -1,0 +1,44 @@
+# Task 3.1: Basic Operations
+# Insert complete web page data (content, metadata, links)
+
+put 'web_pages', '0|example.com|1682000000|abc12345', 'content:html', '<html>...</html>'
+put 'web_pages', '0|example.com|1682000000|abc12345', 'metadata:json', '{"title":"Title", "status_code":200, ...}'
+put 'web_pages', '0|example.com|1682000000|abc12345', 'outlinks:json', '["https://other.com/page1"]'
+put 'web_pages', '0|example.com|1682000000|abc12345', 'inlinks:json', '[]'
+
+# Retrieve a page by exact URL
+
+get 'web_pages', '0|example.com|1682000000|abc12345'
+# Update a page's content and metadata
+
+
+put 'web_pages', '0|example.com|1682000000|abc12345', 'content:html', '<html>updated content</html>'
+put 'web_pages', '0|example.com|1682000000|abc12345', 'metadata:json', '{"title":"New Title", "status_code":200, ...}'
+
+# Delete a page and all its information
+deleteall 'web_pages', '0|example.com|1682000000|abc12345'
+
+
+# 3.2 Filtering examples
+# Find pages with titles containing 'sample'
+scan 'web_pages', {FILTER => "SingleColumnValueFilter('metadata', 'json', =, 'substring:national')"}
+
+# List pages with HTTP 404 status code
+scan 'web_pages', {FILTER => "SingleColumnValueFilter('metadata', 'json', =, 'substring:404')"}
+
+# List pages with HTTP 500 status code
+scan 'web_pages', {FILTER => "SingleColumnValueFilter('metadata', 'json', =, 'substring:500')"}
+
+# 3.3 Pagination example: scan domain pages 5 at a time
+# First page
+scan 'web_pages', {FILTER => "PrefixFilter('0|example.com|')", LIMIT => 5}
+# Note last row key of previous page and use it as STARTROW in next scan
+# scan 'web_pages', {STARTROW => '<last_row_key>', FILTER => "PrefixFilter('0|example.com|')", LIMIT => 5}
+
+# 3.4 Time-based operations
+# Get last 3 versions of a page's content
+get 'web_pages', '0|example.com|1682000000|abc12345', {VERSIONS => 3, COLUMNS => ['content:html']}
+
+# TTL ensures expired cells auto-deleted (no command needed)
+# Manual purge example (delete old rows)
+deleteall 'web_pages', '0|example.com|<old_row_key>'
