@@ -100,6 +100,7 @@ project-root/
 
 ### High Availability Test Plans
 
+
 #### 1. HBase Master Failover Testing
 
 This test plan outlines how to verify the automatic failover of the HBase Master.
@@ -107,15 +108,15 @@ This test plan outlines how to verify the automatic failover of the HBase Master
 1.  **Check active HBase master status before simulating failure:**
 
     **hmaster1** is active:
-    ![HBase Master before failure](hm1_before.png)
+    ![HBase Master before failure](image_readme/hm1_before.png)
     *Image showing hmaster1 as the active master on the HBase UI.*
 
     **hmaster2** is backup:
-    ![HBase Master before failure](hm1_before1.png)
+    ![HBase Master before failure](image_readme/hm1_before1.png)
     *Image showing hmaster2 as the standby master on the HBase UI.*
 
     Overall HBase Master status before failover:
-    ![HBase Master before failure](status1.png)
+    ![HBase Master before failure](image_readme/status1.png)
     *Overall HBase Master status on the HBase UI before failover.*
 
 2.  **Simulate HBase master failure:**
@@ -128,10 +129,10 @@ This test plan outlines how to verify the automatic failover of the HBase Master
     Verify that `hmaster2` has taken over as the active master.
 
     Now **hmaster2** is active:
-    ![HBase Master after failure](after.png)
+    ![HBase Master after failure](image_readme/after.png)
     *Image showing hmaster2 is now the active master on the HBase UI.*
 
-    ![HBase Master after failure](after2.png)
+    ![HBase Master after failure](image_readme/after2.png)
     *Another image confirming hmaster2 is the active master on the HBase UI.*
 
 4.  **Restart failed master:**
