@@ -97,6 +97,7 @@ services:
       - HBASE_ROLE=hmaster
     ports:
       - "16010:16010"
+      - "9090:9090"
     volumes:
       - hbase-data1:/hbase/data
     networks:
@@ -128,6 +129,7 @@ services:
       - HBASE_ROLE=hmaster
     ports:
       - "16020:16010"
+      - "9091:9090"  
     volumes:
       - hbase-data2:/hbase/data
     networks:
@@ -237,4 +239,3 @@ volumes:
   datanode3:
   hbase-data1:
   hbase-data2:
-  

@@ -1,0 +1,28 @@
+# Create table with minimal but optimized column families
+create 'web_pages', 
+    {NAME => 'content', 
+     VERSIONS => 3, 
+     TTL => 7776000,                  
+     BLOOMFILTER => 'ROWCOL',         
+     BLOCKSIZE => 65536,               
+     BLOCKCACHE => true},             
+     
+    {NAME => 'metadata', 
+     VERSIONS => 1,                    
+     BLOOMFILTER => 'ROWCOL',        
+     BLOCKSIZE => 65536,         
+     BLOCKCACHE => true},            
+     
+    {NAME => 'outlinks', 
+     VERSIONS => 2, 
+     TTL => 15552000,                    
+     BLOOMFILTER => 'ROWCOL',          
+     BLOCKSIZE => 65536},             
+     
+    {NAME => 'inlinks', 
+     VERSIONS => 2, 
+     TTL => 15552000,                 
+     BLOOMFILTER => 'ROWCOL',          
+     BLOCKSIZE => 65536}            
+
+describe 'web_pages'

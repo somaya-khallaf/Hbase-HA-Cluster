@@ -36,3 +36,7 @@ Step 6: Validate Data
 
 list
 scan 'test'
+
+sudo apt update
+sudo apt  install -y python3 python3-pip
+sudo pip3 install happybase faker
