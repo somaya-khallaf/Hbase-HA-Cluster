@@ -76,11 +76,24 @@ docker compose down -v
 
 ```
 project-root/
-├── code/                  # Read-only mounted source
-├── hadoop/                # Dockerfile for Hadoop
-├── hbase/                 # Dockerfile for HBase
+├── code/
+├── hadoop/
+│   ├── core-site.xml
+│   ├── hdfs-site.xml
+│   ├── mapred-site.xml
+│   └── yarn-site.xml
+├── hbase/
+│   ├── backup-masters
+│   ├── hbase-site.xml
+│   └── regionservers
+├── scripts/
+│   ├── entrypoint.sh
+│   └── hbase-entrypoint.sh
+├── zookeeper/
+│   └── zoo.cfg
 ├── docker-compose.yml
-└── README.md
+├── Dockerfile.hadoop
+└── Dockerfile.hbase
 ```
 
 ## 🧪 Testing
