@@ -161,6 +161,8 @@ services:
       - datanode1:/hadoopdata/datanode
     environment:
       - HBASE_ROLE=regionserver
+    ports:
+      - "16030:16030"
     networks:
       - hadoop_net
     depends_on:
@@ -185,6 +187,8 @@ services:
       - datanode2:/hadoopdata/datanode
     environment:
       - HBASE_ROLE=regionserver
+    ports:
+      - "16031:16030"
     networks:
       - hadoop_net
     depends_on:
@@ -208,6 +212,8 @@ services:
       - datanode3:/hadoopdata/datanode
     environment:
       - HBASE_ROLE=regionserver
+    ports:
+      - "16032:16030"
     networks:
       - hadoop_net
     depends_on:
